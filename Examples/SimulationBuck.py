@@ -1,7 +1,7 @@
 # coding: utf-8
 
 from LTspice.Circuits import Converter
-simulation_dir = 'E:\Qsync\git\Examples'
+simulation_dir = '.\Examples'
 
 
 L1 = 33E-6
