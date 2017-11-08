@@ -1,9 +1,9 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 import os
+import shutil
+import time
 
-def Simulate(path):
-    sim = LTSpice(sim_file=path[0], sim_dir=path[1] )
+def Simulate(sim_dir,sim_file):
+    sim = LTSpice(sim_file=sim_file, sim_dir=sim_dir )
     sim.run_simulation()
     sim.pars_log()
     return sim.get_data()
@@ -56,14 +56,16 @@ class ConverterData:
 
 
 class ConverterSimulation:
-    def __init__(self,converter_file,converter_dir):
+    def __init__(self,converter_dir,converter_file,data = None):
         self.converter_file = converter_file
         self.converter_dir = converter_dir
-        self.simulation = open(converter_dir+converter_file,"r",encoding="utf-8").read()
+        if data is None:
+            self.data = ConverterData(converter_file.split('.')[0])
+        else:
+            self.data = data
+        self.simulation = open( os.path.normpath(converter_dir+'\\'+converter_file),"r",encoding="utf-8").read()
     def set_value(self,identifier,value):
         self.simulation = self.simulation.replace(identifier,str(value))
-    def remove_new_simulation(self):
-        os.system('rm "'+self.new_simulation[1]+self.new_simulation[0]+'"')
     def save_simulation(self,name=None,directory=None):
         if(name is not None):
             self.converter_file = name
@@ -71,41 +73,15 @@ class ConverterSimulation:
             self.converter_file = 'new_'+self.converter_file
         if(directory is not None):
             self.converter_dir = directory
-        file_sim = open(self.converter_dir+self.converter_file,"w",encoding="utf-8")
+        file_sim = open( os.path.normpath(self.converter_dir+'\\'+self.converter_file),"w",encoding="utf-8")
         file_sim.write(self.simulation)
         file_sim.close()
         self.new_simulation = (self.converter_file, self.converter_dir)
-        return self.new_simulation
-        
-    
-    
-class LTSpice:
-    _LTSpice_dir = '~/.wine/drive_c/Program Files/LTC/LTspiceXVII/'
-    
-    def __init__(self,sim_file,sim_dir,log_name='logPythonLTSpice.txt',sim_script='run_LTSpice_from_cmd.sh',data = None):
-        self.sim_file = sim_file
-        self.sim_dir = sim_dir
-        self.log_name = log_name
-        self._sim_script = sim_script
-        if data is None:
-            self.data = ConverterData(sim_file.split('.')[0])
-        else:
-            self.data = data
-    
-    def run_simulation(self):
-        cp_sim = '"'+self.sim_dir+self.sim_file+'" "'+self._LTSpice_dir+'"'
-        #print( cp_sim )
-        os.system('cp '+cp_sim)
-        run_sim = '"'+self._LTSpice_dir+self._sim_script+'" "'+self.sim_file+'" "'+self.log_name+'"'
-        #print( run_sim )
-        run_sim = os.system(run_sim)
-        os.system('rm "'+self._LTSpice_dir+self.sim_file+'"')
-        print('Simulation finished!')
-        
+        return self.new_simulation    
     def pars_log(self):
-        self._log = open(self._LTSpice_dir+self.log_name,encoding="utf-16-le").read()
+        self._log = open(os.path.normpath(self.converter_dir+'\\' +self.converter_file.split('.')[0]+'\\'+self.converter_file.split('.')[0]+'.log' ),encoding="utf-8").read()
         self.read_values()
-        os.system('rm "'+self._LTSpice_dir+self.log_name+'"')
+        shutil.rmtree(self.converter_dir+'\\'+self.converter_file.split('.')[0]  , ignore_errors=False, onerror=None)
         print('pars finished!')
         
     def search_position(self):
@@ -140,3 +116,24 @@ class LTSpice:
 
     def get_data(self):
         return self.data
+        
+    
+    
+class LTSpice:
+    
+    def __init__(self,sim_dir,sim_file,sim_script='run_LTspice.cmd'):
+        self.sim_file = sim_file
+        self.sim_dir = sim_dir
+        self.sim_script = sim_script
+    
+    def run_simulation(self):
+        cp_sim = os.path.normpath(self.sim_dir+'\\'+self.sim_file.split('.')[0])       
+        print(cp_sim)
+        os.makedirs(cp_sim)
+        shutil.move(os.path.normpath(self.sim_dir+'\\'+self.sim_file),cp_sim)
+        #run_cmd ='& "C:\Program Files\LTC\LTspiceXVII\XVIIx64.exe" -Run -b "'+os.path.normpath(cp_sim+'/'+self.sim_file)+'"'
+        run_cmd = self.sim_script+' "'+os.path.normpath(cp_sim+'\\'+self.sim_file)+'"'
+        print(run_cmd)
+        os.system(run_cmd)
+        print('Simulation finished!')
+        
