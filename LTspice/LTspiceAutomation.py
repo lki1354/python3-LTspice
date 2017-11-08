@@ -121,7 +121,7 @@ class ConverterSimulation:
     
 class LTSpice:
     
-    def __init__(self,sim_dir,sim_file,sim_script='run_LTspice.cmd'):
+    def __init__(self,sim_dir,sim_file,sim_script='LTspice\\run_LTspice.cmd'):
         self.sim_file = sim_file
         self.sim_dir = sim_dir
         self.sim_script = sim_script
