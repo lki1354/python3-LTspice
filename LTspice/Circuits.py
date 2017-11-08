@@ -14,9 +14,9 @@ class Converter(ConverterData):
     cost = 0
     modularisation = 0
 
-    def __init__(self,sim_file,sim_dir, value_list = None):
+    def __init__(self,sim_dir,sim_file, value_list = None):
         super().__init__(sim_file.split('.')[0] ) 
-        self.__circuit = ConverterSimulation(sim_file,sim_dir,data = self)
+        self.__circuit = ConverterSimulation(sim_dir,sim_file,data = self)
         if value_list is not None:
             self.set_values(value_list)
     def calculate_cost(self,component_costs):
