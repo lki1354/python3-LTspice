@@ -17,3 +17,7 @@ The actual version is for Windows and tested on Windows 10 with LTspiceXVII. To 
   * DisplayData.py
   * LTspiceAutomation.py
   * run_LTspice.cmd
+
+
+### notes
+* http://cds.linear.com/docs/en/software-and-simulation/LTspice_ShortcutFlyerC.pdf
