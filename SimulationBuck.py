@@ -1,7 +1,9 @@
 # coding: utf-8
 
 from LTspice.Converter import Converter
-simulation_dir = './Examples/'
+
+#simulation_dir = 'C:\\Users\\Lukas Kiechle\\Documents\\GitHub\\python3-LTspice\\Examples'
+simulation_dir = '\\Examples'
 
 
 L1 = 33E-6
@@ -21,7 +23,7 @@ Rload = Uout / Iout
 Rload
 
 Buck = Converter(simulation_dir,'BuckVariable.asc',{'L1':L1,'Cout':Cout,'Uin':Uin,'Rload':Rload,'Tperiode':T,'Ton':(T*Uout/Uin)})
-Buck.run()
+Buck.run(delete_simulation=True)
 print(Buck)
 
 
