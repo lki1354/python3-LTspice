@@ -17,6 +17,7 @@ Python 3.6.2 Version or higher is needed:
 *	For plotting data two libraries are needed:
 *	Matplotlib
 *	Run following command in the command windnow (cmd):
+
 python -m pip install matplotlib
 
 ## Tools Versionw
@@ -30,6 +31,7 @@ The scripts were tested by usage and worked in the following versions:
 
 ### LTspice Part
 First you have to build a schematic (for this example see Figure 2.1) in LTspice with a transient analysis of the desired stop time or a representing variable name with curly braces (such as {stop_time}). For a steady state analyse you have to now when the simulation reach the steady state point and how long the simulation has to be.You have to set up measurements in LTspice, for example .meas TRAN IoutRMS RMS I(Rload) FROM 2ms TO 10ms. The Converter class pars automatically the log-File after the simulation is finish and expect following variables:
+
 *	UinRMS
 *	IinRMS
 *	UoutRMS
@@ -40,6 +42,7 @@ First you have to build a schematic (for this example see Figure 2.1) in LTspice
 *	UinRippel
 *	PoutRMS
 *	PinAVG
+
 These variable names are defined in the function __search_position which is defined in the class ConverterSimulation. In the LTspice schematic (*.asc) all these variables has to be define in a measurement (.meas) otherwise an error will occur. The example schematic file BuckVariable.asc in the example folder can be used as a template.
 
 ### Python Part:
