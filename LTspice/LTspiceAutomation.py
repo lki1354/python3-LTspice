@@ -14,7 +14,7 @@ def run_simulation(sim_dir,sim_file,ltspice=LTSPICE_PROGRAM , ltspice_flags=LTSP
     cp_sim = os.path.normpath(sim_dir+sim_file.split('.')[0])
     os.makedirs(cp_sim)
     shutil.move(os.path.normpath(sim_dir+sim_file),cp_sim)
-    run_cmd = 'start "'+os.path.normpath(ltspice)+'" '+ltspice_flags+' "'+os.path.normpath(cp_sim+r'/'+sim_file)+'"'
+    run_cmd = 'call "'+os.path.normpath(ltspice)+'" '+ltspice_flags+' "'+os.path.normpath(cp_sim+r'/'+sim_file)+'"'
     logging.info(run_cmd)
     os.system(run_cmd)
     logging.info('Simulation finished!')
