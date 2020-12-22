@@ -1,1 +1,1 @@
-__all__ = ["Circuit","DisplayData","LTspiceAutomation"]
+__all__ = ["Circuit","Converter","DisplayData","LTspiceAutomation"]
