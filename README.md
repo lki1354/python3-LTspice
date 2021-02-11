@@ -14,13 +14,13 @@ For the latest version of LTspice
 *	http://www.linear.com/designtools/software/#LTspice 
 Python 3.6.2 Version or higher is needed:
 *	https://www.python.org/downloads/
-*	For plotting data two libraries are needed:
-*	Matplotlib
-*	Run following command in the command windnow (cmd):
-
+*	For plotting data matplot library is needed:
 python -m pip install matplotlib
+* For parse values quantiphy library is needed
+Run: python -m pip install quantiphy
 
-## Tools Versionw
+
+## Tools Version
 The scripts were tested by usage and worked in the following versions: 
 *	Python 3.6.2 
 *	LTspice XVII(x64) Sep 14 2017
