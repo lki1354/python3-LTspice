@@ -121,7 +121,7 @@ class Converter(ConverterData):
             self._circuit.set_value(name, value)
 
     def run(self,delete_simulation=True):
-        self._circuit.save_simulation()
+        self._circuit.save_simulation(directory = os.path.normpath(directory+self.simulation_file.split('.')[0]))
         try:
             self._circuit.run()
             self._circuit.pars_log()

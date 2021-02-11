@@ -1,56 +1,54 @@
 #! python3
 # coding: utf-8
 from LTspice.Circuit import CircuitRAW
+from LTspice.LTspiceAutomation import LTSPICE_FLAG_RUN_ASCII_OUT,LTSPICE_FLAG_BATCH_RUN_ASCII_OUT
+
 import matplotlib.pyplot as plt
 
 #set the simulation directory
 simulation_dir = './Examples/'
+simulation_file = 'BuckVariable.asc'
+parameter_file = 'default_values.param'
 
-#define the Values
-L1 = 33E-6
-Lin = 33E-6
-Cin = 33E-6
-Cout = 4.7E-6
-Uin = 48
+
+#define the values
+
 f = 1.0E+6
-T = 1/f
+N_cycles = 1000
 Uout = 24
 Iout = 5
 Rload = Uout / Iout
 
-#define which variables in the schematic has to replaced with which value
-value_dict = {'{L1}':L1,'{Cout}':Cout,'{Uin}':Uin,'{Rload}':Rload,'{Tperiode}':T,'{Ton}':(T*Uout/Uin),'{Tstop}':1E-3}
+#create a Converter object which create a copy of the stimulation file 'BuckVariable.asc' but with the set values from above
+Buck =  CircuitRAW(simulation_dir,simulation_file,run_original=False,param_filename = parameter_file)
+Buck.param.Rload = Rload
+Buck.param.Tsim = N_cycles/f
+Buck.param.Tperiode = 1/f
+Buck.param.Tstart = Buck.param.Tsim-2.0/f
+Buck.param.Ton = (1/f*Uout/Buck.param.Uin) 
+print(Buck.param)
 
-#create a CricuitRaw object with the directory reference to the schematic file and read the content of the file
-Buck = CircuitRAW(simulation_dir,'BuckSimple.asc')
+Buck.save_simulation(name='Example_Run.asc')
 
-#replace the place holder with the defined values in the dictionary
-Buck.set_values(value_dict)
-
-#save the schematic with the right values to a new asc-File
-Buck.save_simulation()
-
-#run LTspice and simulate the new schematic file (asc-File) and wait until simulation is finish
-Buck.run()
-
-#pars the ASCII raw-File
-Buck.pars()
-
-#remove all automatic generated files and folder
+Buck.run(LTSPICE_FLAG_BATCH_RUN_ASCII_OUT)
+#Buck.run(LTSPICE_FLAG_RUN_ASCII_OUT)
+Buck.pars_raw()
+Buck.pars_log()
 Buck.remove_output()
 
 #shows the variable names which are read from the raw file
 print(Buck.namesOfVariables)
 
-
 time = Buck.values['time']
-uout = Buck.values['V(out)']
-uin = Buck.values['V(in)']
+uout = Buck.values['v(out)']
+uin = Buck.values['v(in)']
 
 #plot the output and input voltage
-plt.plot(time,uout,time,uin)
-plt.ylabel('Ausgangsspannung [V]')
-plt.xlabel('Zeit in [s]')
+plt.plot(time,uout,label='output')
+plt.plot(time,uin,label='input')
+plt.ylabel('voltage [V]')
+plt.xlabel('time in [s]')
+plt.legend()
 plt.grid(True)
 plt.show()
 

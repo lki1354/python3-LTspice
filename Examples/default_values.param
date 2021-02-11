@@ -1,0 +1,8 @@
+.param L1=33u
+.param Cout=4.7u
+.param Uin=48
+.param Rload= 5
+.param Ton=500n
+.param Tperiode=1000n
+.param Tstart = 0
+.param Tsim = 1m

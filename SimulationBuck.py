@@ -1,31 +1,39 @@
 #! python3
 # coding: utf-8
-from LTspice.Converter import Converter
+from LTspice.Circuit import CircuitRAW
+from LTspice.LTspiceAutomation import LTSPICE_FLAG_RUN_ASCII_OUT,LTSPICE_FLAG_BATCH_RUN_ASCII_OUT
 
 #set the simulation directory
 simulation_dir = './Examples/'
+simulation_file = 'BuckVariable.asc'
+parameter_file = 'default_values.param'
+
 
 #define the values
-L1 = 33E-6
-L2 = 33E-6
-CC = 4.7E-6
-Lin = 33E-6
-Cin = 33E-6
-Cout = 4.7E-6
-Uin = 48
 
 f = 1.0E+6
-T = 1/f
+N_cycles = 1000
 Uout = 24
 Iout = 5
 Rload = Uout / Iout
 
 #create a Converter object which create a copy of the stimulation file 'BuckVariable.asc' but with the set values from above
-Buck = Converter(simulation_dir,'BuckVariable.asc',{'L1_v':L1,'Cout_v':Cout,'Uin_v':Uin,'Rload_v':Rload,'Tperiode_v':T,'Ton_v':(T*Uout/Uin)})
+Buck =  CircuitRAW(simulation_dir,simulation_file,run_original=False,param_filename = parameter_file)
+Buck.param.Rload = Rload
+Buck.param.Tsim = N_cycles/f
+Buck.param.Tperiode = 1/f
+Buck.param.Tstart = Buck.param.Tsim-2.0/f
+Buck.param.Ton = (1/f*Uout/Buck.param.Uin) 
+print(Buck.param)
 
-#starts LTspice in background and run the simulation, after finish parsing the log-File all automatically created files will be deleted
-Buck.run(delete_simulation=True)
+Buck.save_simulation(name='Example_Run.asc')
+
+Buck.run(LTSPICE_FLAG_BATCH_RUN_ASCII_OUT)
+#Buck.run(LTSPICE_FLAG_RUN_ASCII_OUT)
+Buck.pars_raw()
+Buck.pars_log()
+Buck.remove_output()
 
 #shows the result form the simulation
-print(Buck)
+print(Buck.data)
 
